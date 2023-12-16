@@ -3,6 +3,6 @@
 # Default options for ambre computer
 #######################################
 CC=gcc
-LIBSLOCAL=-L/ -L/usr/lib/x86_64-linux-gnu -llapack -lblas -lm
+LIBSLOCAL=-L/usr/lib/ -L/usr/lib/x86_64-linux-gnu/ -llapacke -lblas -lm
 INCLUDEBLASLOCAL=-I/usr/include 
 OPTCLOCAL=-fPIC -march=native

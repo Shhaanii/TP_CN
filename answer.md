@@ -22,7 +22,13 @@ https://www.netlib.org/lapack/lapacke
 
 **4. Que fait la fonction dgbmv ? Quelle méthode implémente-t-elle ?**
 
-    DGBMV - banded matrix vector multiply (en précision double : 64 bits) Matrice tridiagonale surement et stockage en general Band
+    dgbmv : permet de faire un Gaxpy avec A une matrice transposé. y ← βy + αA(T)x
+    En c : cblas_dgbmv(cblas_layout, cblas_transa, m, n, ml, mu, alpha, a, lda, x, incx, beta, y, incy);
+
+    clas_layout = 
+    cblas_transa, m, n, ml, mu, alpha, a, lda, x, incx, beta, y, incy
+
+    https://www.ibm.com/docs/en/essl/6.1?topic=mvs-sgbmv-dgbmv-cgbmv-zgbmv-matrix-vector-product-general-band-matrix-its-transpose-its-conjugate-transpose
 
 **5. Que fait la fonction dgbtrf ? Quelle méthode implémente-t-elle ?**
 

@@ -31,7 +31,7 @@ int main(int argc,char *argv[])
   T1=5.0;
 
   printf("--------- Poisson 1D ---------\n\n");
-  RHS=(double *) malloc(sizeof(double)*la);
+  RHS = (double *)calloc(la, sizeof(double));
   EX_SOL=(double *) malloc(sizeof(double)*la);
   X=(double *) malloc(sizeof(double)*la);
 
@@ -49,11 +49,12 @@ int main(int argc,char *argv[])
   kl=1;
   lab=kv+kl+ku+1;
 
-  AB = (double *) malloc(sizeof(double)*lab*la);
+  AB = (double *) calloc(lab * la, sizeof(double));
 
   set_GB_operator_colMajor_poisson1D(AB, &lab, &la, &kv);
 
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
+  //cblas_dgbmv(CblasColMajor, CblasTrans, &lab, &la, &kl, &ku, 1.0, AB, );
 
   printf("Solution with LAPACK\n");
   /* LU Factorization */
