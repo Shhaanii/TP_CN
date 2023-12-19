@@ -47,7 +47,12 @@ void set_dense_RHS_DBC_1D(double *RHS, int *la, double *BC0, double *BC1)
 
 void set_analytical_solution_DBC_1D(double *EX_SOL, double *X, int *la, double *BC0, double *BC1)
 {
-  // résolution ? 
+  const double diff = *BC1 - *BC0;
+
+  for (int i = 0; i < (*la); i++)
+  {
+    EX_SOL[i] = *BC0 + X[i] * diff;
+  }
 
 }
 

@@ -60,7 +60,7 @@ int main(int argc,char *argv[])
   /* LU Factorization */
   info=0;
   ipiv = (int *) calloc(la, sizeof(int));
-  //dgbtrf_(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+  LAPACKE_dgbtrf(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
 
   /* LU for tridiagonal matrix  (can replace dgbtrf_) */
   // ierr = dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
