@@ -61,11 +61,11 @@ int main(int argc,char *argv[])
   info=0;
   ipiv = (int *) calloc(la, sizeof(int));
 
+
   
-  LAPACKE_dgbtrs(LAPACK_COL_MAJOR, la, la, kl, ku, NRHS, AB, lab, ipiv, RHS, la);
+  // Exercice 4. Stockage GB et appel a DGBMV
+  //cblas_dgbmv(CblasColMajor, CblasNoTrans, la, la, kl, ku, 1.0, AB, lab, EX_SOL, 1, 0.0, RHS, 1);
   
-  // Exercice 4. Stockage GB et appel `a DGBMV
-  cblas_dgbmv(CblasColMajor, CblasNoTrans, la, la, kl, ku, 1.0, AB, lab, EX_SOL, 1, 0.0, RHS, 1);
   
 
   /* LU for tridiagonal matrix  (can replace dgbtrf_) */
@@ -74,17 +74,17 @@ int main(int argc,char *argv[])
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");
   
   /* Solution (Triangular) */
-  
-  /* if (info==0){
-    dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+  info = LAPACKE_dgbtrf(LAPACK_COL_MAJOR, la, la, kl, ku, AB, lab, ipiv);
+
+  if (info==0){
+    LAPACKE_dgbtrs('N', &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
     if (info!=0){printf("\n INFO DGBTRS = %d\n",info);}
   }else{
     printf("\n INFO = %d\n",info);
-  } */
+  }
 
   /* It can also be solved with dgbsv */
-  // TODO : use dgbsv
-
+  LAPACKE_dgbsv(LAPACK_COL_MAJOR, la, kl, ku, NRHS, AB, lab, ipiv, RHS, la);
   write_xy(RHS, X, &la, "SOL.dat");
 
   /* Relative forward error */

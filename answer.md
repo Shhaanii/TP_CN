@@ -32,6 +32,7 @@ https://www.netlib.org/lapack/lapacke
 
 **5. Que fait la fonction dgbtrf ? Quelle méthode implémente-t-elle ?**
 
+    -> donne LU avec AB matrice bande 
     DGBTRF computes an LU factorization of a real m-by-n band matrix A
     using partial pivoting with row interchanges.
 
@@ -41,6 +42,7 @@ https://www.netlib.org/lapack/lapacke
 
 **6. Que fait la fonction dgbtrs ? Quelle méthode implémente-t-elle ?**
 
+    -> Résolution système linéaire avec A = LU
     - DGBTRS solves a system of linear equations
     A * X = B  or  A**T * X = B
     with a general band matrix A using the LU factorization computed by DGBTRF.
@@ -49,6 +51,7 @@ https://www.netlib.org/lapack/lapacke
 
 **7. Que fait la fonction dgbsv ? Quelle méthode implémente-t-elle ?**
 
+    -> aooek dgbtrf + dgbsv
     DGBSV computes the solution to a real system of linear equations
     A * X = B, where A is a band matrix of order N with KL subdiagonals
     and KU superdiagonals, and X and B are N-by-NRHS matrices.
