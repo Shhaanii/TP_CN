@@ -54,18 +54,24 @@ int main(int argc,char *argv[])
   set_GB_operator_colMajor_poisson1D(AB, &lab, &la, &kv);
 
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "AB.dat");
-  //cblas_dgbmv(CblasColMajor, CblasTrans, &lab, &la, &kl, &ku, 1.0, AB, );
-
+  
+ 
   printf("Solution with LAPACK\n");
   /* LU Factorization */
   info=0;
   ipiv = (int *) calloc(la, sizeof(int));
-  LAPACKE_dgbtrf(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+
+  
+  LAPACKE_dgbtrs(LAPACK_COL_MAJOR, la, la, kl, ku, NRHS, AB, lab, ipiv, RHS, la);
+  
+  // Exercice 4. Stockage GB et appel `a DGBMV
+  cblas_dgbmv(CblasColMajor, CblasNoTrans, la, la, kl, ku, 1.0, AB, lab, EX_SOL, 1, 0.0, RHS, 1);
+  
 
   /* LU for tridiagonal matrix  (can replace dgbtrf_) */
-  // ierr = dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+  ierr = dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
 
-  // write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");
+  write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");
   
   /* Solution (Triangular) */
   
