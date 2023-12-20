@@ -58,6 +58,13 @@ void set_analytical_solution_DBC_1D(double *EX_SOL, double *X, int *la, double *
 
 void set_grid_points_1D(double *x, int *la)
 {
+    // Calcul du pas entre les points sur la grille -> pour que les points soit équidistants
+    const double step = 1.0 / ((*la) + 1); 
+
+    for (int i = 0; i < *la; ++i)
+    {
+        x[i] = (i + 1) * step;
+    }
 }
 
 void write_GB_operator_rowMajor_poisson1D(double *AB, int *lab, int *la, char *filename)
