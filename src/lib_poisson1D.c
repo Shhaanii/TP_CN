@@ -6,7 +6,6 @@
 #include "lib_poisson1D.h"
 #include <string.h>
 
-
 void set_GB_operator_colMajor_poisson1D(double *AB, int *lab, int *la, int *kv) {
     // lab = nombre de colonnes
     // la = taille d'une ligne
@@ -67,15 +66,40 @@ void set_grid_points_1D(double *x, int *la)
     }
 }
 
-
 double relative_forward_error(double* x, double* y, int* la){
-  return 0;
+  // err := || y - x || / || x || avec y la valeur approché
+  // y = ax + y
+  cblas_daxpy(*la, -1, x, 1, y, 1);
+  return (cblas_dnrm2(*la, y, 1) / cblas_dnrm2(*la, x, 1));
 }
 
 int indexABCol(int i, int j, int *lab){
   return j*(*lab)+i;
 }
 
-int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info){
+int dgbtrftridiag(int *la, int *n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info)
+{
+  /* Initialisation */
+  ipiv[0] = 1;
+  *info = 0;
+
+  for (int i = 1; i < *la; i++)
+  {
+    // Vérification du pivot nul
+    if (AB[*lab * i - 2] == 0)
+    {
+      *info = 1; // Erreur : pivot nul
+      return *info;
+    }
+
+    // Division par le pivot
+    AB[(*lab * i) - 1] /= AB[*lab * i - 2];
+
+    // Mise à jour des éléments de la diagonale
+    AB[*lab * (i + 1) - 2] -= AB[*lab * i - 1] * AB[*lab * (i + 1) - 3];
+
+    ipiv[i] = i + 1;
+  }
+
   return *info;
 }

@@ -3,11 +3,15 @@
 /* This file contains the main function   */
 /* to solve the Poisson 1D problem        */
 /******************************************/
+#include <time.h>
+
 #include "lib_poisson1D.h"
 
 #define TRF 0
 #define TRI 1
 #define SV 2
+
+
 
 int main(int argc, char *argv[])
 /* ** argc: Nombre d'arguments */
@@ -27,6 +31,8 @@ int main(int argc, char *argv[])
   double *AB;
 
   double relres;
+  struct timespec start, end;
+  double elapsed_time;
 
   if (argc == 2)
   {
@@ -74,13 +80,22 @@ int main(int argc, char *argv[])
   /* LU Factorization */
   if (IMPLEM == TRF)
   {
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     dgbtrf_(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+
+    elapsed_time = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    printf("Temps d'exécution pour dgbtrf_ : %f secondes\n", elapsed_time);
   }
 
   /* LU for tridiagonal matrix  (can replace dgbtrf_) */
   if (IMPLEM == TRI)
   {
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     dgbtrftridiag(&la, &la, &kl, &ku, AB, &lab, ipiv, &info);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    elapsed_time = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    printf("Temps d'exécution pour dgbtrftridiag : %f secondes\n", elapsed_time);
   }
 
   if (IMPLEM == TRI || IMPLEM == TRF)
@@ -88,10 +103,17 @@ int main(int argc, char *argv[])
     /* Solution (Triangular) */
     if (info == 0)
     {
+      clock_gettime(CLOCK_MONOTONIC_RAW, &start);
       dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info, (unsigned long)&la);
+      clock_gettime(CLOCK_MONOTONIC_RAW, &end);
       if (info != 0)
       {
         printf("\n INFO DGBTRS = %d\n", info);
+      }
+      else
+      {
+        elapsed_time = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+        printf("Temps d'exécution pour  dgbtrs_ : %f secondes\n", elapsed_time);
       }
     }
     else
@@ -103,7 +125,12 @@ int main(int argc, char *argv[])
   /* It can also be solved with dgbsv */
   if (IMPLEM == SV)
   {
-    // TODO : use dgbsv
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+    dgbsv_(&la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+
+    elapsed_time = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    printf("Temps d'exécution pour  dgbsv_ : %f secondes\n", elapsed_time);
   }
 
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");
